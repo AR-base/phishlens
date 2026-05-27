@@ -775,9 +775,44 @@ body::before {
 }
 
 .url-result-card.error {
-  border-color: rgba(255, 77, 77, 0.4);
+  border: 1px solid var(--danger);
+  border-left: 4px solid var(--danger);
   background: var(--danger-soft);
+  color: var(--text);
+}
+
+.url-error-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--danger);
+}
+
+.url-error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.url-result-card.error p {
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 500;
+  margin: 0;
 }
 
 .url-result-card.risk-safe,
