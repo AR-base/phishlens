@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PhishLens — interactive phishing awareness training with an AI tutor." />
+  <title>PhishLens — AI Cyber Awareness</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+  <!-- ============ NAVIGATION ============ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo">
+        <span class="logo-dot" aria-hidden="true"></span>
+        <span>PhishLens</span>
+      </div>
+      <div class="nav-links">
+        <a href="#" data-action="start">Training</a>
+        <a href="#url-inspector" data-action="show-url">URL Inspector</a>
+        <a href="#" data-action="open-chat">AI Tutor</a>
+        <a href="#" data-action="open-info" class="nav-info" aria-label="Legal information">
+          <span class="info-icon" aria-hidden="true">i</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="eyebrow-line" aria-hidden="true"></span>
+        <span class="mono">Group 04 / ESAIP / Cybersecurity + AI</span>
+      </div>
+      <h1>Spot the<br/><em>phish</em> before<br/>it bites.</h1>
+      <p class="lead">
+        An interactive training platform that uses real-world phishing scenarios and an AI tutor
+        to teach you what static slideshows never could — how to actually recognize an attack in the wild.
+      </p>
+      <button class="cta" data-action="start">
+        <span>Begin Training</span>
+        <span class="cta-arrow" aria-hidden="true">→</span>
+      </button>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="num">91%</div>
+          <div class="label">of cyberattacks begin with a phishing email</div>
+        </div>
+        <div class="stat">
+          <div class="num">10</div>
+          <div class="label">real-world scenarios in this training session</div>
+        </div>
+        <div class="stat">
+          <div class="num">∞</div>
+          <div class="label">questions you can ask our AI security tutor</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ URL INSPECTOR ============ -->
+  <section class="url-section" id="url-inspector" aria-labelledby="url-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="mono section-eyebrow">Quick Tool</div>
+          <h2 id="url-title">URL Inspector</h2>
+        </div>
+      </div>
+      <p class="url-intro">
+        Paste any suspicious link and let Claude analyze it for phishing indicators —
+        typosquatting, brand impersonation, suspicious TLDs, structural red flags.
+        <span class="url-disclaimer">Claude inspects the URL string only; it does not visit the site.</span>
+      </p>
+      <div class="url-form">
+        <input
+          type="url"
+          id="url-input"
+          class="url-input"
+          placeholder="https://example.com/suspicious-link"
+          aria-label="URL to analyze"
+          spellcheck="false"
+          autocapitalize="off"
+        />
+        <button id="url-check-btn" class="url-check-btn" data-action="check-url">
+          Analyze
+        </button>
+      </div>
+      <div id="url-result" class="url-result"></div>
+    </div>
+  </section>
+
+  <!-- ============ SIMULATOR ============ -->
+  <section class="app-section" id="simulator" aria-labelledby="simulator-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="mono section-eyebrow">Module 01 — Simulator</div>
+          <h2 id="simulator-title">Inbox Triage</h2>
+        </div>
+        <div class="progress-pill" aria-live="polite">
+          <span class="mono" id="progress-text">0 / 10</span>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+      <div id="email-container"></div>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section class="app-section" id="dashboard" aria-labelledby="dashboard-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="mono section-eyebrow">Module 02 — Results</div>
+          <h2 id="dashboard-title">Your Phish Profile</h2>
+        </div>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>Overall Performance</h3>
+          <div class="big-score" id="big-score">0</div>
+          <div class="score-sub" id="score-sub">out of 10 emails classified correctly</div>
+          <div class="score-grade" id="score-grade">—</div>
+          <div class="score-advice" id="score-advice"></div>
+          <button class="restart-btn" data-action="restart">
+            <span>Train Again</span><span aria-hidden="true">↻</span>
+          </button>
+        </div>
+        <div class="dash-card">
+          <h3>Accuracy by Threat Type</h3>
+          <div id="category-breakdown"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHATBOT FAB ============ -->
+  <button class="chat-fab" data-action="toggle-chat" aria-label="Open AI security tutor">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <!-- ============ CHATBOT PANEL ============ -->
+  <div class="chat-panel" id="chat-panel" aria-hidden="true">
+    <div class="chat-head">
+      <div>
+        <div class="chat-title">AI Security Tutor</div>
+        <div class="chat-sub">Ask anything about phishing</div>
+      </div>
+      <button class="chat-close" data-action="toggle-chat" aria-label="Close tutor">✕</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs" role="log" aria-live="polite"></div>
+    <div class="chat-suggestions" id="chat-chips"></div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input"
+             placeholder="e.g. how do I check a link?"
+             aria-label="Ask the AI tutor a question" />
+      <button class="chat-send" data-action="send-chat">Send</button>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div>© 2026 PhishLens — Built by Group 04, ESAIP. All rights reserved.</div>
+        <div class="foot-links">
+          <a href="#" data-action="open-info">Legal &amp; Privacy</a>
+          <span class="mono">v1.0</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ LEGAL INFO MODAL ============ -->
+  <div class="modal-overlay" id="info-modal" aria-hidden="true" role="dialog" aria-labelledby="info-title">
+    <div class="modal" role="document">
+      <div class="modal-head">
+        <div>
+          <div class="mono section-eyebrow">Legal &amp; Copyright</div>
+          <h2 id="info-title">Information</h2>
+        </div>
+        <button class="modal-close" data-action="close-info" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <p class="modal-lead">
+          <strong>Copyright © 2026 Group 04, ESAIP.</strong> All rights reserved.
+          PhishLens is an educational project built for the ESAIP Cybersecurity + AI module.
+        </p>
+
+        <h3>About this platform</h3>
+        <p>
+          PhishLens is an educational cybersecurity awareness platform. It is provided "as is" for learning purposes and is not intended as a replacement for professional security tools, enterprise antivirus, or formal incident response services.
+        </p>
+
+        <h3>Disclaimer</h3>
+        <p>
+          The phishing scenarios, URL risk analysis, and AI tutor responses are designed for educational purposes only. The URL Inspector analyzes the URL string and does not visit, fetch, or render the linked page. Users remain responsible for verifying any security guidance through official channels and trusted sources before acting on it.
+        </p>
+
+        <h3>Privacy</h3>
+        <ul>
+          <li>No personal information is collected.</li>
+          <li>No user accounts or sign-up required.</li>
+          <li>No tracking cookies are set.</li>
+          <li>Session data (chat history, training progress) is kept only in your browser and is cleared when you close the tab.</li>
+          <li>URL Inspector queries and chat messages are forwarded anonymously to the AI provider; no identifying metadata is attached.</li>
+        </ul>
+
+        <h3>Third-party services</h3>
+        <ul>
+          <li>AI capabilities powered by <strong>Anthropic Claude</strong> (model: claude-haiku-4-5), used under Anthropic's terms of service.</li>
+          <li>Hosting and serverless functions provided by <strong>Vercel</strong>.</li>
+          <li>Typography via <strong>Google Fonts</strong> (Instrument Serif, Manrope, JetBrains Mono).</li>
+        </ul>
+
+        <h3>Open source</h3>
+        <p>
+          Source code is publicly available at
+          <a href="https://github.com/AR-base/phishlens" target="_blank" rel="noopener">github.com/AR-base/phishlens</a>
+          and is released under the MIT License for educational use.
+        </p>
+
+        <h3>Trademarks</h3>
+        <p>
+          Brand names that appear in the phishing email scenarios (PayPal, Amazon, Microsoft, GitHub, Netflix, Slack, LinkedIn, DHL, and others) are trademarks of their respective owners and are used here solely for educational purposes within simulated phishing examples. No affiliation, sponsorship, or endorsement is implied.
+        </p>
+
+        <h3>Contact</h3>
+        <p>
+          For questions, feedback, or to report an issue, please reach out via the GitHub repository linked above.
+        </p>
+
+        <div class="modal-team">
+          <div class="mono">TEAM — GROUP 04, ESAIP</div>
+          <p>
+            MEKALA Ram Babu · BHOSALE Vijay Deepak · PINNINTI Sai Anish · Thandassery Niranjan Satheesh · KOLA Karan
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <!-- Data layer -->
+  <script src="js/data/emails.js"></script>
+  <script src="js/data/knowledge-base.js"></script>
+  <!-- Modules -->
+  <script src="js/utils.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/url-checker.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/dashboard.js"></script>
+  <!-- Orchestrator (loaded last) -->
+  <script src="js/app.js"></script>
+</body>
+</html>

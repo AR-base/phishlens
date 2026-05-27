@@ -1,0 +1,93 @@
+/* ============================================================
+   PhishLens — Responsive Styles
+   Mobile-first overrides for narrower viewports.
+   ============================================================ */
+
+/* ---------- Tablet (max 880px) ---------- */
+@media (max-width: 880px) {
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Mobile (max 680px) ---------- */
+@media (max-width: 680px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .hero {
+    padding: 60px 0 40px;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-inner {
+    padding: 16px 20px;
+  }
+
+  .chat-panel {
+    right: 14px;
+    bottom: 90px;
+    width: calc(100vw - 28px);
+    height: calc(100vh - 130px);
+  }
+
+  .chat-fab {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .url-form {
+    flex-direction: column;
+  }
+
+  .url-check-btn {
+    padding: 14px 28px;
+  }
+
+  .url-summary {
+    font-size: 1.2rem;
+  }
+
+  .app-section {
+    padding: 56px 0;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .email-meta-row .value {
+    max-width: 60%;
+    word-break: break-word;
+  }
+
+  .big-score {
+    font-size: 4.5rem;
+  }
+}
+
+/* ---------- Small phones (max 380px) ---------- */
+@media (max-width: 380px) {
+  .hero h1 {
+    font-size: 2.6rem;
+  }
+
+  .cta {
+    padding: 16px 22px;
+    font-size: 0.9rem;
+  }
+}

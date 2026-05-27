@@ -1,0 +1,14 @@
+{
+  "name": "phishlens",
+  "version": "1.0.0",
+  "description": "AI Cyber Awareness Platform — Group 04 / ESAIP",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  }
+}
