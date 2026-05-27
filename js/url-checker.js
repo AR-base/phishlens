@@ -29,7 +29,7 @@ window.UrlChecker = (function () {
     };
   }
 
-  /* ---------- Normalization ---------- */
+  /* ---------- Normalization & Validation ---------- */
   /**
    * Add a default scheme if the user pasted something like "paypal.com/login".
    */
@@ -40,6 +40,46 @@ window.UrlChecker = (function () {
       url = "https://" + url;
     }
     return url;
+  }
+
+  /**
+   * Reject obviously non-URL input (garbage strings, missing TLD, etc.).
+   * Accepts: domains (example.com, sub.example.co.uk), IPv4 (192.168.1.1).
+   * Rejects: single words, missing TLD, numeric-only TLDs, weird characters.
+   */
+  function isValidUrl(url) {
+    try {
+      var u = new URL(url);
+      if (u.protocol !== "http:" && u.protocol !== "https:") return false;
+      var host = u.hostname;
+      if (!host) return false;
+      if (host.startsWith(".") || host.endsWith(".")) return false;
+      if (host.indexOf(".") === -1) return false;
+
+      // IPv4 path
+      if (/^\d+\.\d+\.\d+\.\d+$/.test(host)) {
+        var octets = host.split(".");
+        for (var i = 0; i < octets.length; i++) {
+          var n = parseInt(octets[i], 10);
+          if (isNaN(n) || n < 0 || n > 255) return false;
+        }
+        return true;
+      }
+
+      // Domain path
+      if (!/^[a-z0-9.-]+$/i.test(host)) return false;
+      var parts = host.split(".");
+      var tld = parts[parts.length - 1];
+      if (tld.length < 2) return false;
+      if (!/^[a-z]+$/i.test(tld)) return false;
+      // No empty parts (catches "example..com")
+      for (var j = 0; j < parts.length; j++) {
+        if (parts[j].length === 0) return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /* ---------- Local heuristic fallback ---------- */
@@ -228,9 +268,14 @@ window.UrlChecker = (function () {
       '</div>';
   }
 
-  function renderError(msg) {
+  function renderError(msg, title) {
+    var heading = title || "Error";
     refs().result.innerHTML =
       '<div class="url-result-card error">' +
+        '<div class="url-error-head">' +
+          '<span class="url-error-icon">!</span>' +
+          '<span>' + Utils.escapeHtml(heading) + '</span>' +
+        '</div>' +
         '<p>' + Utils.escapeHtml(msg) + '</p>' +
       '</div>';
   }
@@ -242,7 +287,15 @@ window.UrlChecker = (function () {
     var url = normalize(raw);
 
     if (!url) {
-      renderError("Please paste a URL to analyze.");
+      renderError("Please paste a URL to analyze.", "Empty input");
+      return;
+    }
+
+    if (!isValidUrl(url)) {
+      renderError(
+        "What you entered does not look like a valid web address. Try something like https://example.com or paypal.com/login.",
+        "Invalid URL"
+      );
       return;
     }
 
@@ -266,6 +319,7 @@ window.UrlChecker = (function () {
   return {
     check: check,
     normalize: normalize,
+    isValidUrl: isValidUrl,
     heuristicCheck: heuristicCheck
   };
 })();
