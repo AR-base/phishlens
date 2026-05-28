@@ -29,6 +29,7 @@ window.Simulator = (function () {
     Utils.byId("hero").style.display = "none";
     Utils.byId("simulator").classList.add("active");
     Utils.byId("dashboard").classList.remove("active");
+    if (window.AppHistory) AppHistory.push("training");
     render();
     Utils.scrollTo(refs().section);
   }
