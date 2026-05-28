@@ -4,7 +4,80 @@
    so individual modules stay free of inline DOM bindings.
    ============================================================ */
 
+/* ---------- Browser History (back-button support) ---------- */
+window.AppHistory = (function () {
+  var initialized = false;
+
+  function init() {
+    if (initialized) return;
+    initialized = true;
+
+    // Set initial state to "home" so the first back press leaves the app naturally.
+    if (!window.history.state) {
+      window.history.replaceState({ view: "home" }, "", window.location.pathname);
+    }
+
+    window.addEventListener("popstate", function (e) {
+      var view = (e.state && e.state.view) || "home";
+      restore(view);
+    });
+  }
+
+  function push(view) {
+    init();
+    // Avoid duplicate states when nothing actually changed.
+    if (window.history.state && window.history.state.view === view) return;
+    var url = view === "home" ? window.location.pathname : "#" + view;
+    window.history.pushState({ view: view }, "", url);
+  }
+
+  /**
+   * Restore the visual state of the app for a given view name.
+   * Called only when the user navigates via browser back/forward.
+   */
+  function restore(view) {
+    var hero      = Utils.byId("hero");
+    var simulator = Utils.byId("simulator");
+    var dashboard = Utils.byId("dashboard");
+    var chatPanel = Utils.byId("chat-panel");
+    var infoModal = Utils.byId("info-modal");
+
+    // Always close overlays when navigating
+    if (chatPanel && chatPanel.classList.contains("open")) {
+      chatPanel.classList.remove("open");
+      chatPanel.setAttribute("aria-hidden", "true");
+    }
+    if (infoModal && infoModal.classList.contains("open")) {
+      infoModal.classList.remove("open");
+      infoModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    if (view === "home") {
+      hero.style.display = "";
+      simulator.classList.remove("active");
+      dashboard.classList.remove("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (view === "training") {
+      hero.style.display = "none";
+      simulator.classList.add("active");
+      dashboard.classList.remove("active");
+      Utils.scrollTo(simulator);
+    } else if (view === "dashboard") {
+      hero.style.display = "none";
+      simulator.classList.remove("active");
+      dashboard.classList.add("active");
+      Utils.scrollTo(dashboard);
+    }
+  }
+
+  return { init: init, push: push };
+})();
+
 (function App() {
+
+  // Initialize history tracking on load
+  AppHistory.init();
 
   /* ---------- Action Router ---------- */
   /**
