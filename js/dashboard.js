@@ -43,6 +43,7 @@ window.Dashboard = (function () {
   function show(attempts) {
     Utils.byId("simulator").classList.remove("active");
     Utils.byId("dashboard").classList.add("active");
+    if (window.AppHistory) AppHistory.push("dashboard");
 
     var correct = attempts.filter(function (a) { return a.correct; }).length;
     var total = attempts.length;
