@@ -2,7 +2,14 @@
 
 > AI Cyber Awareness Platform — Group 04 / ESAIP
 
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+![Lint](https://github.com/AR-base/phishlens/actions/workflows/lint.yml/badge.svg)
+![Vercel](https://img.shields.io/badge/deploy-vercel-black.svg)
+![Claude](https://img.shields.io/badge/model-Claude%20Haiku%204.5-orange.svg)
+
 PhishLens is an interactive phishing-awareness training platform combining a realistic email simulator, an AI tutor powered by the **Anthropic Claude API**, a **URL Inspector** that analyzes suspicious links in real time, and a personalized scoring dashboard.
+
+**Live:** https://phishlens.vercel.app · **Security policy:** [SECURITY.md](SECURITY.md)
 
 ---
 
