@@ -49,8 +49,12 @@ STYLE
 - Do not invent statistics. If you are unsure, say so and give the safest general guidance.
 - Never ask the user to share passwords, OTP codes, or personal data.`;
 
-/* ---------- Simple in-memory rate limiter ---------- */
-/* Resets on cold start — adequate for a student demo. */
+/* ---------- Simple in-memory rate limiter ----------
+ * Per-isolate Map. Vercel can route the same IP to a different worker
+ * after a cold start, so the bucket effectively resets — adequate for a
+ * student demo but not for production. Swap for Vercel KV / Upstash if
+ * abuse becomes a real concern (see README "Hardening").
+ */
 const rateBuckets = new Map();
 const RATE_LIMIT = 15;            // requests per window
 const RATE_WINDOW_MS = 60 * 1000; // 1 minute
@@ -66,6 +70,21 @@ function isRateLimited(ip) {
   bucket.count++;
   rateBuckets.set(ip, bucket);
   return bucket.count > RATE_LIMIT;
+}
+
+/* ---------- Origin allowlist ----------
+ * The Anthropic API key is server-side, but anyone can POST to this
+ * function from a browser or a script and burn the budget. We require
+ * a recognized Origin on browser requests. ALLOWED_ORIGIN is a
+ * comma-separated list set in Vercel env. Missing Origin (server-to-server
+ * calls, curl) is allowed through — rely on the rate limit there.
+ */
+function isOriginAllowed(req) {
+  const origin = req.headers.origin;
+  if (!origin) return true;
+  const allowed = (process.env.ALLOWED_ORIGIN || "").split(",").map(s => s.trim()).filter(Boolean);
+  if (allowed.length === 0) return true; // not configured → permissive (back-compat)
+  return allowed.includes(origin);
 }
 
 /* ---------- Helpers ---------- */
@@ -95,6 +114,10 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  if (!isOriginAllowed(req)) {
+    return res.status(403).json({ error: "Origin not allowed." });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
