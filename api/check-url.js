@@ -45,7 +45,9 @@ Risk scale (and matching score range):
 
 The score should be consistent with the risk label.`;
 
-/* ---------- Rate limit (shared instance is fine) ---------- */
+/* ---------- Rate limit (shared instance is fine) ----------
+ * Per-isolate Map; see api/chat.js for the caveat.
+ */
 const rateBuckets = new Map();
 const RATE_LIMIT = 15;
 const RATE_WINDOW_MS = 60 * 1000;
@@ -70,6 +72,18 @@ function clientIp(req) {
   );
 }
 
+/* ---------- Origin allowlist ----------
+ * Browser POSTs must come from a known origin. ALLOWED_ORIGIN is a
+ * comma-separated list set in Vercel env. Missing/empty config is permissive.
+ */
+function isOriginAllowed(req) {
+  const origin = req.headers.origin;
+  if (!origin) return true;
+  const allowed = (process.env.ALLOWED_ORIGIN || "").split(",").map(s => s.trim()).filter(Boolean);
+  if (allowed.length === 0) return true;
+  return allowed.includes(origin);
+}
+
 function safeParseJson(text) {
   // Strip markdown fences if the model added them despite instructions.
   const cleaned = text.replace(/```json|```/g, "").trim();
@@ -90,6 +104,10 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  if (!isOriginAllowed(req)) {
+    return res.status(403).json({ error: "Origin not allowed." });
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {

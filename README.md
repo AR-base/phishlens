@@ -59,7 +59,8 @@ phishguard/
 **Built-in safety:**
 
 - API key stays server-side in a Vercel env var
-- In-memory per-IP rate limit (15 requests / minute)
+- In-memory per-IP rate limit (15 requests / minute) — see *Hardening* below
+- Origin allowlist via `ALLOWED_ORIGIN` env var blocks cross-origin browser abuse
 - System prompt constrains the tutor to cybersecurity topics
 - Message length capped at 2,000 characters
 - Conversation history capped at the last 10 turns
@@ -86,17 +87,31 @@ vercel
 
 Follow the prompts. When asked for the project name, accept the default.
 
-**Then set the API key:**
+**Then set the env vars:**
 
 ```bash
 vercel env add ANTHROPIC_API_KEY
 # Paste your key, select "Production" + "Preview" + "Development"
 
-# Redeploy with the new env var
+# Optional but strongly recommended once you know your deployed URL:
+vercel env add ALLOWED_ORIGIN
+# Paste e.g. https://phishlens.vercel.app — comma-separate multiple
+# origins if you have a custom domain too.
+
+# Redeploy with the new env vars
 vercel --prod
 ```
 
 Your live URL appears in the terminal. Done.
+
+### Hardening for production
+
+The default rate limit lives in process memory: cold starts and routing to a
+new Vercel instance both reset the bucket, which is fine for a student demo
+but means a determined attacker can keep burning API credits. If this site
+ever sees real traffic, swap the in-memory `rateBuckets` Map for a shared
+store such as [Vercel KV](https://vercel.com/docs/storage/vercel-kv) or
+[Upstash Redis](https://upstash.com/), keyed on the same client IP.
 
 ### 3. Local development
 
